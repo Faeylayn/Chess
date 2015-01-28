@@ -25,12 +25,13 @@ class Board
 
   def initialize_pieces
 
-      @board[0][3] = Queen.new(self, [0,3], "wQ ")
-      @board[0][4] = Queen.new(self,[0,4], "wQ")
-      @board[0][5] = Queen.new(self, [0,5], "wQ ")
+      @board[0][3] = Queen.new(self, [0,3], "wQ2")
+      @board[0][4] = Queen.new(self,[0,4], "wQ1")
+      @board[0][5] = Queen.new(self, [0,5], "wQ3")
 
       @board[7][3] = Queen.new(self, [7,3], "bQ ")
       @board[7][4] = King.new(self,[7,4], "bKi")
+      @board[4][4] = Pawn.new(self, [4, 4], "bP ")
 
   end
 
@@ -110,6 +111,10 @@ class Board
         moveset = space.generate_move_set
 
         next if moveset == []
+
+        puts space.name
+        print moveset
+        puts
 
         return true if moveset.include?(kings_location)
 

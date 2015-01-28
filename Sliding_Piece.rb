@@ -14,7 +14,8 @@ class Sliding_Piece < Piece
       test_position[1] += possible_step[1]
 
       while valid_move?(test_position)
-
+  #
+  #      print test_position
         ##if there is a collision, and its with your own piece
         if collision_detect(test_position) && @board.board[test_position[0]][test_position[1]].color == @color
           break
@@ -33,9 +34,15 @@ class Sliding_Piece < Piece
       end
     end
 
-    moveset
+    puts @name
 
+    print moveset
+    moveset
   end
+
+  # def valid_moves(moves)
+  #   moves.reject { |to_pos| move_into_check?(to_pos) }
+  # end
 
   def collision_detect (position)
     @board.board[position[0]][position[1]] != ' '
