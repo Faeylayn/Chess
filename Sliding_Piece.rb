@@ -4,17 +4,38 @@ require_relative 'Piece'
 class Sliding_Piece < Piece
 
   def generate_move_set
+
     @moveset = []
+
     self.class::CLASS_STEPS.each do |possible_step|
-      test_position = @position
-      test_position += possible_step
+
+      test_position = @position.dup
+      test_position[0] += possible_step[0]
+      test_position[1] += possible_step[1]
+
       while valid_move?(test_position)
 
-        @moveset << test_position
-#       break if @board.occupied?(test_position)
-        test_position += possible_step
+        ##if there is a collision, and its with your own piece
+        if collision_detect(test_position) && @board[test_position[0]][test_position[1]].color == @color
+          break
+        end
+
+        @moveset << test_position.dup
+
+        ##if there is a collision and it is with an enemey piece
+        if collision_detect(test_position) && @board[test_position[0]][test_position[1]].color != @color
+          break
+        end
+
+        test_position[0] = test_position[0] + possible_step[0]
+        test_position[1] = test_position[1] + possible_step[1]
+
       end
     end
+  end
+
+  def collision_detect (position)
+    @board[position[0]][position[1]] != ' '
   end
 
 end

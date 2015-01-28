@@ -96,9 +96,9 @@ class Pawn < Piece
 
     end
 
-    @moveset << @position + move_delta[2] if @board.occupied_by_enemy?(@position + move_delta[2])
+    @moveset << @position + move_delta[2] #if @board.occupied_by_enemy?(@position + move_delta[2])
 
-    @moveset << @position + move_delta[3] if @board.occupied_by_enemy?(@position + move_delta[3])
+    @moveset << @position + move_delta[3] #if @board.occupied_by_enemy?(@position + move_delta[3])
 
   end
 

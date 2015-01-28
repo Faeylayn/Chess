@@ -2,7 +2,7 @@
 
 class Piece
 
-  attr_accessor :position, :color, :name
+  attr_accessor :position, :color, :name, :moveset
 
   HORIZONTAL_STEPS = [
     [1,0],

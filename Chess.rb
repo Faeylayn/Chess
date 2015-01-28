@@ -52,7 +52,8 @@ class Board
   end
 
   def display
-    puts
+    puts "================================="
+    puts "================================="
     @board.each do |row|
       row.each do |space|
         print " "
@@ -67,12 +68,15 @@ class Board
 
   def king_finder(color)
 
+    kings_location = nil
+
     @board.each do |row|
       row.each do |space|
 
         next if space == " "
 
-        kings_loccation = [row,space] if space.name == "#{color}Ki"
+        kings_location = [row,space] if space.name == "#{color}Ki"
+
       end
     end
 
@@ -100,7 +104,8 @@ class Board
 
   def dup_board
 
-    temp_board = []
+    temp_board = Board.new
+    temp_board.board = []
 
     @board.each do |row|
 
@@ -110,7 +115,7 @@ class Board
         new_row << space.dup
       end
 
-      temp_board << new_row
+      temp_board.board << new_row
     end
 
     temp_board
@@ -127,15 +132,15 @@ class Board
 
   end
 
-
   def make_move(start_pos, end_pos)
 
-    moving_position = @board[start_pos[0]][start_pos[1]]
-    end_position = @board[end_pos[0]][end_pos[1]]
+    moving_position = @board[ start_pos[0] ] [ start_pos[1] ]
 
-    moving_position, end_position =  " ", moving_position
+    @board[ start_pos[0] ] [ start_pos[1] ] = " "
+    @board[ end_pos[0] ][ end_pos[1] ] = moving_position
 
   end
+
 
 end
 
@@ -160,6 +165,8 @@ class Game
 
       move = get_user_input
 
+      @board.make_move(move[0], move[1])
+      @board[move[1][0]] [move[1][1]].position = move[1]
 
 
     end
@@ -173,7 +180,8 @@ class Game
       end_pos = get_end_pos
       verify_input(start_pos, end_pos)
     rescue StandardError
-      puts "You entered an invalid character. Try again."
+      puts "\nYou entered an invalid character. Try again."
+    retry
     rescue CheckError
       puts "That move would put you into check."
     retry
@@ -228,10 +236,13 @@ class Game
   end
 
   def verify_input(start_pos, end_pos)
+
     target_pos = @board.board[end_pos[0]][end_pos[1]]
     moving_piece = @board.board[start_pos[0]][start_pos[1]]
     moving_piece.generate_move_set
+
     raise CheckError if moving_piece.move_into_check?(end_pos)
+
     return true if moving_piece.moveset.include?(end_pos)
 
     raise StandardError
