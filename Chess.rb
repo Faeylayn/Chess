@@ -27,9 +27,9 @@ class Board
 
       @board[0][3] = Queen.new(self, [0,3], "wQ ")
       @board[0][4] = Queen.new(self,[0,4], "wQ")
-      @board[0][5] = Queen.new(self, [0,3], "wQ ")
+      @board[0][5] = Queen.new(self, [0,5], "wQ ")
 
-      #@board[7][3] = Queen.new(self, [7,3], "bQ ")
+      @board[7][3] = Queen.new(self, [7,3], "bQ ")
       @board[7][4] = King.new(self,[7,4], "bKi")
 
   end
@@ -111,9 +111,6 @@ class Board
 
         next if moveset == []
 
-        puts space.name
-        print moveset
-
         return true if moveset.include?(kings_location)
 
       end
@@ -168,17 +165,43 @@ class Board
     ##generates kings moveset
     moveset = @board[idx][jdx].generate_move_set
 
-    print moveset
-
     moveset.each do |move|
 
       return false if !is_threatened?(move,color)
 
     end
 
-    return true
+    return false if !cant_save?(color)
+
+    true
 
   end
+
+  def cant_save?(color)
+
+    @board.each_with_index do |row, idx|
+      row.each_with_index do |space,jdx|
+
+        next if space == " " || space.color != color
+
+        check = space if space.color == color
+
+        moveset = check.generate_move_set
+        moveset.each do |move|
+        #  print move
+
+          return false if space.move_into_check?(move) == false
+          #print space.move_into_check?(move)
+          #puts
+        end
+
+      end
+    end
+     true
+
+  end
+
+
 
 end
 
@@ -220,6 +243,7 @@ class Game
 
       if @board.check_mate?(@current_color)
         @game_on = false
+        @board.display
         puts "You Lose! You get nothing! Good Day sir!"
         break
       end
@@ -234,7 +258,7 @@ class Game
     begin
       start_pos = get_start_piece
       end_pos = get_end_pos
-      
+
       verify_input(start_pos, end_pos)
 
     rescue CollisionError

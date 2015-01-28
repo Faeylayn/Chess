@@ -11,11 +11,12 @@ class King < Piece
 
     MOVE_DELTA.each do |delta|
 
+
       test_position = [@position[0] + delta[0], @position[1] + delta[1]]
+      next unless valid_move?(test_position)
+      next if move_into_check?(test_position)
 
-      #next if move_into_check?(test_position)
-
-      moveset << test_position if valid_move?(test_position)
+      moveset << test_position
 
     end
     moveset
