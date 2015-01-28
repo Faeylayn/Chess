@@ -37,7 +37,9 @@ class Piece
 
     test_board = @board.dup_board
 
-    
+    test_board.make_move(@position, position)
+
+    test_board.in_check?(@color)
 
   end
 

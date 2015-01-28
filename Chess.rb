@@ -1,10 +1,17 @@
 require_relative 'Piece'
 require_relative 'Sliding_Piece'
 require_relative 'Stepping_Piece'
-
+require 'byebug'
 ##Game class and Board class
-class Board
 
+class CheckError < StandardError
+end
+
+class BoundsError < StandardError
+end
+
+class Board
+  attr_accessor :board
   def initialize
     @board = Array.new(8){ Array.new(8) {" "} }
     initialize_pieces
@@ -134,10 +141,103 @@ end
 
 class Game
 
+  def initialize
+
+    @board = Board.new
+    @game_on = true
+    @current_color = 'w'
+    play
+
+  end
+
+  def play
+
+    puts "\nWelcome to Chess!\n"
+
+    while @game_on
+
+      @board.display
+
+      move = get_user_input
 
 
+
+    end
+
+  end
+
+  def get_user_input
+
+    begin
+      start_pos = get_start_piece
+      end_pos = get_end_pos
+      verify_input(start_pos, end_pos)
+    rescue StandardError
+      puts "You entered an invalid character. Try again."
+    rescue CheckError
+      puts "That move would put you into check."
+    retry
+  end
+
+    [start_pos, end_pos]
+
+  end
+
+  def get_start_piece
+
+      puts "Enter the position you wish to move from"
+      start_position = gets.chomp.split("")
+
+      start_position[0] = start_position[0].to_i
+      start_position[1] = start_position[1].to_i
+
+      if start_position.all? {|coord| coord.between?(0,7)}
+
+          test_position = @board.board[start_position[0]][start_position[1]]
+
+        if  test_position != ' ' && test_position.color == @current_color
+          return start_position
+        end
+
+      end
+
+      raise StandardError
+
+  end
+
+  def get_end_pos
+
+    puts "\nEnter the position you wish to move to"
+    end_position = gets.chomp.split("")
+
+    end_position[0] = end_position[0].to_i
+    end_position[1] = end_position[1].to_i
+
+    if end_position.all? {|coord| coord.between?(0,7)}
+
+        test_position = @board.board[end_position[0]][end_position[1]]
+
+      if  test_position == ' ' || test_position.color != @current_color
+        return end_position
+      end
+
+    end
+
+    raise StandardError
+
+  end
+
+  def verify_input(start_pos, end_pos)
+    target_pos = @board.board[end_pos[0]][end_pos[1]]
+    moving_piece = @board.board[start_pos[0]][start_pos[1]]
+    moving_piece.generate_move_set
+    raise CheckError if moving_piece.move_into_check?(end_pos)
+    return true if moving_piece.moveset.include?(end_pos)
+
+    raise StandardError
+
+
+  end
 end
 
-
-a = Board.new
-a.display
+a = Game.new
