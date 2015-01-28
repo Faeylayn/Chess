@@ -33,8 +33,12 @@ class Piece
     position.all? {|coord| coord.between?(0,7)}
   end
 
-  def make_move(move_position)
-    @position = move_position
+  def move_into_check?(position)
+
+    test_board = @board.dup_board
+
+    
+
   end
 
 end

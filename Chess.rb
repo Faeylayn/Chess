@@ -91,6 +91,24 @@ class Board
 
   end
 
+  def dup_board
+
+    temp_board = []
+
+    @board.each do |row|
+
+      new_row = []
+
+      row.each do |space|
+        new_row << space.dup
+      end
+
+      temp_board << new_row
+    end
+
+    temp_board
+
+  end
 
   def in_check?(color)
 
@@ -99,6 +117,17 @@ class Board
 
     ##generate move set of all enemy peices
     check_all_enemy_movesets(kings_location,color)
+
+  end
+
+
+  def make_move(start_pos, end_pos)
+
+    moving_position = @board[start_pos[0]][start_pos[1]]
+    end_position = @board[end_pos[0]][end_pos[1]]
+
+    moving_position, end_position =  " ", moving_position
+
   end
 
 end
