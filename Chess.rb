@@ -10,6 +10,12 @@ end
 class BoundsError < StandardError
 end
 
+class InvalidPieceError < StandardError
+end
+
+class CollisionError < StandardError
+end
+
 class Board
   attr_accessor :board
   def initialize
@@ -54,7 +60,7 @@ class Board
   def display
     puts "================================="
     puts "================================="
-    @board.each do |row|
+    @board.reverse.each do |row|
       row.each do |space|
         print " "
         print "___" if space == " "
@@ -92,6 +98,8 @@ class Board
         next if space == " " || space.color == color
 
         space.generate_move_set
+
+        next if space.moveset == []
 
         return true if space.moveset.include?(kings_location)
 
@@ -163,11 +171,18 @@ class Game
 
       @board.display
 
+      puts "YOU'RE IN CHECK!" if @board.in_check?(@current_color)
+
       move = get_user_input
 
       @board.make_move(move[0], move[1])
       @board[move[1][0]] [move[1][1]].position = move[1]
 
+      if @current_color == "w"
+        @current_color = "b"
+      else
+        @current_color = "w"
+      end
 
     end
 
@@ -179,12 +194,27 @@ class Game
       start_pos = get_start_piece
       end_pos = get_end_pos
       verify_input(start_pos, end_pos)
-    rescue StandardError
-      puts "\nYou entered an invalid character. Try again."
-    retry
+
+    rescue CollisionError
+      puts "You can't move through pieces."
+      retry
+
     rescue CheckError
       puts "That move would put you into check."
     retry
+
+    rescue InvalidPieceError
+      puts "You haven't selected one of your own pieces."
+      retry
+
+    rescue BoundsError
+      puts "You have entered a position that is off the board."
+      retry
+
+    rescue StandardError
+      puts "\nYou entered an invalid character. Try again."
+    retry
+
   end
 
     [start_pos, end_pos]
@@ -193,7 +223,9 @@ class Game
 
   def get_start_piece
 
-      puts "Enter the position you wish to move from"
+    puts "-------------------------------------------"
+
+      puts "\nEnter the position you wish to move from"
       start_position = gets.chomp.split("")
 
       start_position[0] = start_position[0].to_i
@@ -207,13 +239,17 @@ class Game
           return start_position
         end
 
+        raise InvalidPieceError
+
       end
 
-      raise StandardError
+      raise BoundsError
 
   end
 
   def get_end_pos
+
+
 
     puts "\nEnter the position you wish to move to"
     end_position = gets.chomp.split("")
@@ -231,7 +267,7 @@ class Game
 
     end
 
-    raise StandardError
+    raise CollisionError
 
   end
 

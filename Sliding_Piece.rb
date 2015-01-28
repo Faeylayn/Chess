@@ -16,14 +16,14 @@ class Sliding_Piece < Piece
       while valid_move?(test_position)
 
         ##if there is a collision, and its with your own piece
-        if collision_detect(test_position) && @board[test_position[0]][test_position[1]].color == @color
+        if collision_detect(test_position) && @board.board[test_position[0]][test_position[1]].color == @color
           break
         end
 
         @moveset << test_position.dup
 
         ##if there is a collision and it is with an enemey piece
-        if collision_detect(test_position) && @board[test_position[0]][test_position[1]].color != @color
+        if collision_detect(test_position) && @board.board[test_position[0]][test_position[1]].color != @color
           break
         end
 
@@ -35,7 +35,7 @@ class Sliding_Piece < Piece
   end
 
   def collision_detect (position)
-    @board[position[0]][position[1]] != ' '
+    @board.board[position[0]][position[1]] != ' '
   end
 
 end

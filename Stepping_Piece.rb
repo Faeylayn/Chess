@@ -74,7 +74,7 @@ class Pawn < Piece
   end
 
   def pawn_valid?(position)
-    valid_move?(position) && !@board.occupied_by_enemy?(position)
+    valid_move?(position) #&& !@board.occupied_by_enemy?(position)
   end
 
   def generate_move_set
