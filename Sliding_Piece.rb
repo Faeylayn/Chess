@@ -5,7 +5,7 @@ class Sliding_Piece < Piece
 
   def generate_move_set
 
-    @moveset = []
+    moveset = []
 
     self.class::CLASS_STEPS.each do |possible_step|
 
@@ -20,7 +20,7 @@ class Sliding_Piece < Piece
           break
         end
 
-        @moveset << test_position.dup
+        moveset << test_position.dup
 
         ##if there is a collision and it is with an enemey piece
         if collision_detect(test_position) && @board.board[test_position[0]][test_position[1]].color != @color
@@ -32,6 +32,9 @@ class Sliding_Piece < Piece
 
       end
     end
+
+    moveset
+
   end
 
   def collision_detect (position)

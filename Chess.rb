@@ -25,37 +25,48 @@ class Board
 
   def initialize_pieces
 
-    @board[0][0] = Rook.new(self, [0,0], "wR ")
-    @board[0][1] = Knight.new(self, [0,1], "wKN")
-    @board[0][2] = Bishop.new(self, [0,2], "wB ")
-    @board[0][3] = Queen.new(self, [0,3], "wQ ")
-    @board[0][4] = King.new(self,[0,4], "wKi")
-    @board[0][5] = Bishop.new(self, [0,5], "wB ")
-    @board[0][6] = Knight.new(self, [0,6], "wKN")
-    @board[0][7] = Rook.new(self, [0,7], "wR ")
+      @board[0][3] = Queen.new(self, [0,3], "wQ ")
+      @board[0][4] = Queen.new(self,[0,4], "wQ")
+      @board[0][5] = Queen.new(self, [0,3], "wQ ")
 
-    8.times do |count|
-      @board[1][count] = Pawn.new(self, [1,count], "wP ")
-
-    end
-
-    ##########################################
-
-    @board[7][0] = Rook.new(self, [7,0], "bR ")
-    @board[7][1] = Knight.new(self, [7,1], "bKN")
-    @board[7][2] = Bishop.new(self, [7,2], "bB ")
-    @board[7][3] = Queen.new(self, [7,3], "bQ ")
-    @board[7][4] = King.new(self,[7,4], "bKi")
-    @board[7][5] = Bishop.new(self, [7,5], "bB ")
-    @board[7][6] = Knight.new(self, [7,6], "bKN")
-    @board[7][7] = Rook.new(self, [7,7], "bR ")
-
-    8.times do |count|
-      @board[6][count] = Pawn.new(self, [6,count], "bP ")
-
-    end
+      #@board[7][3] = Queen.new(self, [7,3], "bQ ")
+      @board[7][4] = King.new(self,[7,4], "bKi")
 
   end
+
+  # def initialize_pieces
+  #
+  #   @board[0][0] = Rook.new(self, [0,0], "wR ")
+  #   @board[0][1] = Knight.new(self, [0,1], "wKN")
+  #   @board[0][2] = Bishop.new(self, [0,2], "wB ")
+  #   @board[0][3] = Queen.new(self, [0,3], "wQ ")
+  #   @board[0][4] = King.new(self,[0,4], "wKi")
+  #   @board[0][5] = Bishop.new(self, [0,5], "wB ")
+  #   @board[0][6] = Knight.new(self, [0,6], "wKN")
+  #   @board[0][7] = Rook.new(self, [0,7], "wR ")
+  #
+  #   8.times do |count|
+  #     @board[1][count] = Pawn.new(self, [1,count], "wP ")
+  #
+  #   end
+  #
+  #   ##########################################
+  #
+  #   @board[7][0] = Rook.new(self, [7,0], "bR ")
+  #   @board[7][1] = Knight.new(self, [7,1], "bKN")
+  #   @board[7][2] = Bishop.new(self, [7,2], "bB ")
+  #   @board[7][3] = Queen.new(self, [7,3], "bQ ")
+  #   @board[7][4] = King.new(self,[7,4], "bKi")
+  #   @board[7][5] = Bishop.new(self, [7,5], "bB ")
+  #   @board[7][6] = Knight.new(self, [7,6], "bKN")
+  #   @board[7][7] = Rook.new(self, [7,7], "bR ")
+  #
+  #   8.times do |count|
+  #     @board[6][count] = Pawn.new(self, [6,count], "bP ")
+  #
+  #   end
+  #
+  # end
 
   def display
     puts "================================="
@@ -71,17 +82,16 @@ class Board
     puts
   end
 
-
   def king_finder(color)
 
     kings_location = nil
 
-    @board.each do |row|
-      row.each do |space|
+    @board.each_with_index do |row, idx|
+      row.each_with_index do |space,jdx|
 
         next if space == " "
 
-        kings_location = [row,space] if space.name == "#{color}Ki"
+        kings_location = [idx, jdx] if space.name == "#{color}Ki"
 
       end
     end
@@ -90,18 +100,21 @@ class Board
 
   end
 
-  def check_all_enemy_movesets(kings_location,color)
+  def is_threatened?(kings_location,color)
 
     @board.each do |row|
       row.each do |space|
 
         next if space == " " || space.color == color
 
-        space.generate_move_set
+        moveset = space.generate_move_set
 
-        next if space.moveset == []
+        next if moveset == []
 
-        return true if space.moveset.include?(kings_location)
+        puts space.name
+        print moveset
+
+        return true if moveset.include?(kings_location)
 
       end
     end
@@ -136,7 +149,7 @@ class Board
     kings_location = king_finder(color)
 
     ##generate move set of all enemy peices
-    check_all_enemy_movesets(kings_location,color)
+    is_threatened?(kings_location,color)
 
   end
 
@@ -149,6 +162,23 @@ class Board
 
   end
 
+  def check_mate?(color)
+    idx, jdx = king_finder(color)
+
+    ##generates kings moveset
+    moveset = @board[idx][jdx].generate_move_set
+
+    print moveset
+
+    moveset.each do |move|
+
+      return false if !is_threatened?(move,color)
+
+    end
+
+    return true
+
+  end
 
 end
 
@@ -165,7 +195,9 @@ class Game
 
   def play
 
-    puts "\nWelcome to Chess!\n"
+    puts "\nWelcome to Chess!\n\n"
+
+    puts "It is now white's turn.\n"
 
     while @game_on
 
@@ -176,13 +208,22 @@ class Game
       move = get_user_input
 
       @board.make_move(move[0], move[1])
-      @board[move[1][0]] [move[1][1]].position = move[1]
+      @board.board[move[1][0]] [move[1][1]].position = move[1]
 
       if @current_color == "w"
         @current_color = "b"
+        puts "It is now black's turn."
       else
         @current_color = "w"
+        puts "It is now white's turn."
       end
+
+      if @board.check_mate?(@current_color)
+        @game_on = false
+        puts "You Lose! You get nothing! Good Day sir!"
+        break
+      end
+
 
     end
 
@@ -193,6 +234,7 @@ class Game
     begin
       start_pos = get_start_piece
       end_pos = get_end_pos
+      
       verify_input(start_pos, end_pos)
 
     rescue CollisionError
@@ -215,7 +257,7 @@ class Game
       puts "\nYou entered an invalid character. Try again."
     retry
 
-  end
+    end
 
     [start_pos, end_pos]
 
@@ -249,8 +291,6 @@ class Game
 
   def get_end_pos
 
-
-
     puts "\nEnter the position you wish to move to"
     end_position = gets.chomp.split("")
 
@@ -275,14 +315,13 @@ class Game
 
     target_pos = @board.board[end_pos[0]][end_pos[1]]
     moving_piece = @board.board[start_pos[0]][start_pos[1]]
-    moving_piece.generate_move_set
+    moveset = moving_piece.generate_move_set
 
     raise CheckError if moving_piece.move_into_check?(end_pos)
 
-    return true if moving_piece.moveset.include?(end_pos)
+    return true if moveset.include?(end_pos)
 
     raise StandardError
-
 
   end
 end

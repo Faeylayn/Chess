@@ -24,7 +24,6 @@ class Piece
   def initialize(board, starting_position, name)
     @position = starting_position
     @color = name[0]
-    @moveset = []
     @board = board
     @name = name
   end

@@ -7,15 +7,18 @@ class King < Piece
 
   def generate_move_set
 
-    @moveset = []
+    moveset = []
 
     MOVE_DELTA.each do |delta|
 
-      test_position = @position + delta
-      @moveset << test_position if valid_move?(test_position)
+      test_position = [@position[0] + delta[0], @position[1] + delta[1]]
+
+      #next if move_into_check?(test_position)
+
+      moveset << test_position if valid_move?(test_position)
 
     end
-
+    moveset
   end
 
 end
@@ -35,15 +38,15 @@ class Knight < Piece
 
   def generate_move_set
 
-    @moveset = []
+    moveset = []
 
     MOVE_DELTA.each do |delta|
 
-      test_position = @position + delta
-      @moveset << test_position if valid_move?(test_position)
+      test_position = [@position[0] + delta[0], @position[1] + delta[1]]
+      moveset << test_position if valid_move?(test_position)
 
     end
-
+    moveset
   end
 
 end
@@ -79,7 +82,7 @@ class Pawn < Piece
 
   def generate_move_set
 
-    @moveset = []
+    moveset = []
 
     if @color == 'w'
       move_delta = MOVE_DELTA_W
@@ -87,18 +90,16 @@ class Pawn < Piece
       move_delta = MOVE_DELTA_B
     end
 
-    if pawn_valid?(@position + move_delta[0])
-      @moveset << @position + move_delta[0]
+    if pawn_valid?([@position[0] + move_delta[0][0], @position[1] + move_delta[0][1]])
+      moveset << [@position[0] + move_delta[0][0], @position[1] + move_delta[0][1]]
 
-      if pawn_valid?(@position + move_delta[1]) && @moved == false
-        @moveset << @position + move_delta[1]
+      if pawn_valid?([@position[0] + move_delta[1][0], @position[1] + move_delta[1][1]]) && @moved == false
+        moveset << [@position[0] + move_delta[1][0], @position[1] + move_delta[1][1]]
       end
 
     end
 
-    @moveset << @position + move_delta[2] #if @board.occupied_by_enemy?(@position + move_delta[2])
-
-    @moveset << @position + move_delta[3] #if @board.occupied_by_enemy?(@position + move_delta[3])
+    moveset
 
   end
 
