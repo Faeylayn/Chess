@@ -5,7 +5,7 @@ class King < Piece
 
   MOVE_DELTA = HORIZONTAL_STEPS + VERTICAL_STEPS + DIAGONAL_STEPS
 
-  def move_set
+  def generate_move_set
 
     @moveset = []
 
@@ -33,7 +33,7 @@ class Knight < Piece
     [-2,-1]
   ]
 
-  def move_set
+  def generate_move_set
 
     @moveset = []
 
@@ -73,7 +73,11 @@ class Pawn < Piece
 
   end
 
-  def move_set
+  def pawn_valid?(position)
+    valid_move?(position) && !@board.occupied_by_enemy?(position)
+  end
+
+  def generate_move_set
 
     @moveset = []
 
@@ -81,6 +85,21 @@ class Pawn < Piece
       move_delta = MOVE_DELTA_W
     else
       move_delta = MOVE_DELTA_B
+    end
+
+    if pawn_valid?(@position + move_delta[0])
+      @moveset << @position + move_delta[0]
+
+      if pawn_valid?(@position + move_delta[1]) && @moved == false
+        @moveset << @position + move_delta[1]
+      end
+
+    end
+
+    @moveset << @position + move_delta[2] if @board.occupied_by_enemy?(@position + move_delta[2])
+
+    @moveset << @position + move_delta[3] if @board.occupied_by_enemy?(@position + move_delta[3])
+
   end
 
 end

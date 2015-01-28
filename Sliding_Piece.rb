@@ -3,7 +3,7 @@ require_relative 'Piece'
 ## rook, queen, bishop
 class Sliding_Piece < Piece
 
-  def move_set
+  def generate_move_set
     @moveset = []
     self.class::CLASS_STEPS.each do |possible_step|
       test_position = @position
