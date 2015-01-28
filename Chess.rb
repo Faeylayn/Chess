@@ -1,85 +1,94 @@
+require_relative 'Piece'
+require_relative 'Sliding_Piece'
+require_relative 'Stepping_Piece'
+
 ##Game class and Board class
 class Board
 
   def initialize
-    @board = Array.new(8){Array.new(8) (" ")}
+    @board = Array.new(8){ Array.new(8) {" "} }
     initialize_pieces
   end
 
   def initialize_pieces
 
-    wR = Rook.new(self, [0,0])
-    @board[0][0] = wR
+    @board[0][0] = Rook.new(self, [0,0], "wR ")
 
-    wKN = Knight.new(self, [0,1])
-    @board[0][1] = wKN
 
-    wB = Bishop.new(self, [0,2])
-    @board[0][2] = wB
+    @board[0][1] = Knight.new(self, [0,1], "wKN")
 
-    wQ = Queen.new(self, [0,3])
-    @board[0][3] = wQ
 
-    wKi = King.new(self,[0,4])
-    @board[0][4] = wKi
+    @board[0][2] = Bishop.new(self, [0,2], "wB ")
 
-    wB = Bishop.new(self, [0,5])
-    @board[0][5] = wB
 
-    wKN = Knight.new(self, [0,6])
-    @board[0][6] = wKN
+    @board[0][3] = Queen.new(self, [0,3], "wQ ")
 
-    wR = Rook.new (self, [0,7])
-    @board[0][7] = wR
 
-    count = 0
-    7.times do
-      wP = Pawn.new(self, [1,count])
-      @board[1][count] = wP
-      count += 1
+    @board[0][4] = King.new(self,[0,4], "wKi")
+
+
+    @board[0][5] = Bishop.new(self, [0,5], "wB ")
+
+
+    @board[0][6] = Knight.new(self, [0,6], "wKN")
+
+
+    @board[0][7] = Rook.new(self, [0,7], "wR ")
+
+
+    8.times do |count|
+      @board[1][count] = Pawn.new(self, [1,count], "wP ")
+
     end
 
     ##########################################
 
-    bR = Rook.new(self, [7,0])
-    @board[7][0] = bR
+    @board[7][0] = Rook.new(self, [7,0], "bR ")
 
-    bKN = Knight.new(self, [7,1])
-    @board[7][1] = bKN
 
-    bB = Bishop.new(self, [7,2])
-    @board[7][2] = bB
+    @board[7][1] = Knight.new(self, [7,1], "bKN")
 
-    bQ = Queen.new(self, [7,3])
-    @board[7][3] = bQ
 
-    bKi = King.new(self,[7,4])
-    @board[7][4] = bKi
+    @board[7][2] = Bishop.new(self, [7,2], "bB ")
 
-    bB = Bishop.new(self, [7,5])
-    @board[7][5] = bB
 
-    bKN = Knight.new(self, [7,6])
-    @board[7][6] = bKN
+    @board[7][3] = Queen.new(self, [7,3], "bQ ")
 
-    bR = Rook.new (self, [7,7])
-    @board[7][7] = bR
 
-    count = 0
-    7.times do
-      bP = Pawn.new(self, [6,count])
-      @board[6][count] = bP
-      count += 1
+    @board[7][4] = King.new(self,[7,4], "bKi")
+
+
+    @board[7][5] = Bishop.new(self, [7,5], "bB ")
+
+
+    @board[7][6] = Knight.new(self, [7,6], "bKN")
+
+
+    @board[7][7] = Rook.new(self, [7,7], "bR ")
+
+
+    8.times do |count|
+      @board[6][count] = Pawn.new(self, [6,count], "bP ")
+
     end
 
   end
 
   def display
-
+    puts
     @board.each do |row|
-      p row
+      row.each do |space|
+        print " "
+        print "___" if space == " "
+        print space.name if space != " "
+      end
+      puts ' '
     end
-
+    puts
   end
 
 end
+
+
+a = Board.new
+a.display

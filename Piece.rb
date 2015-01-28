@@ -2,7 +2,7 @@
 
 class Piece
 
-  attr_accessor :position, :color
+  attr_accessor :position, :color, :name
 
   HORIZONTAL_STEPS = [
     [1,0],
@@ -21,11 +21,12 @@ class Piece
     [-1,-1]
   ]
 
-  def initialize(board, starting_position)
+  def initialize(board, starting_position, name)
     @position = starting_position
-    @color = nil
+    @color = name[0]
     @moveset = []
     @board = board
+    @name = name
   end
 
   def valid_move?(position)

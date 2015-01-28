@@ -50,4 +50,37 @@ end
 
 class Pawn < Piece
 
+  MOVE_DELTA_W = [
+    [1,0],
+    [2,0],
+
+    [1,-1],
+    [1,1]
+  ]
+
+  MOVE_DELTA_B = [
+    [-1,0],
+    [-2,0],
+
+    [-1,-1],
+    [-1,1]
+  ]
+
+  def initialize(board, start_position, name)
+
+    super(board, start_position, name)
+    @moved = false
+
+  end
+
+  def move_set
+
+    @moveset = []
+
+    if @color == 'w'
+      move_delta = MOVE_DELTA_W
+    else
+      move_delta = MOVE_DELTA_B
+  end
+
 end
